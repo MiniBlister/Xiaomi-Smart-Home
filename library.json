@@ -1,0 +1,13 @@
+{
+    "id": "{2AFE9956-72BA-45E1-8E0D-E12C71DBEC91}",  
+    "author": "Raphael Kohrs",  
+    "name": "IP Symcon Module - Xiaomi Smart Home",  
+    "url": "",  
+    "version": "0.1",  
+    "build": 0,  
+    "compatibility": {
+        "version": "4.2",
+        "date": 1497181917
+    },
+    "date": 1497181917
+}
