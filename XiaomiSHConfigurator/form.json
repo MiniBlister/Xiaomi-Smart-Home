@@ -1,0 +1,61 @@
+{
+    "actions": [{
+            "type": "Button",
+            "label": "Search",
+            "onClick": "XISMC_ListDevices($id);"
+        },
+        {
+            "type": "Label",
+            "label": "No devices found!"
+        }, 
+        {
+            "type": "Label",
+            "label": "No new devices found!"
+        }, {
+            "type": "Label",
+            "label": "No disconnected devices found!"
+        },
+        {
+            "type": "List",
+            "name": "devices",
+            "rowCount": 16,
+            "add": false,
+            "delete": false,
+            "sort": {
+                "column": "DeviceID",
+                "direction": "ascending"
+            },
+            "columns": [{
+                    "label": "DeviceID",
+                    "name": "DeviceID",
+                    "width": "150px",
+                    "save": true
+                }, {
+                    "label": "Name",
+                    "name": "name",
+                    "width": "auto",
+                    "edit": {
+                        "type": "ValidationTextBox",
+                        "name": "DeviceName",
+                        "caption": "Device Name"
+                    },
+                    "save": true
+                }, {
+                    "label": "Type",
+                    "name": "type",
+                    "width": "auto"
+                }, {
+                    "label": "InstanceID",
+                    "name": "instanceID",
+                    "width": "75px",
+                    "save": true
+                }
+            ],
+            "values": []
+        }, {
+            "type": "Button",
+            "label": "Create",
+            "onClick": "if (($devices['DeviceID'] == '') or ($devices['instanceID'] > 0)) return; $InstanceID = IPS_CreateInstance('{B237D1DF-B9B0-4A8D-8EC5-B4F7A88E54FC}'); if (IPS_GetInstance($InstanceID)['ConnectionID'] != IPS_GetInstance($id)['ConnectionID']) { if (IPS_GetInstance($InstanceID)['ConnectionID'] > 0) IPS_DisconnectInstance($InstanceID); IPS_ConnectInstance($InstanceID, IPS_GetInstance($id)['ConnectionID']); } @IPS_SetProperty($InstanceID, 'DeviceID', $devices['DeviceID']); @IPS_ApplyChanges($InstanceID); IPS_SetName($InstanceID, 'Xiaomi Device'); IPS_ApplyChanges($id);"
+        }]
+}
+

@@ -1,0 +1,15 @@
+{
+    "translations": {
+            "de": { 
+                    "No devices found!" : "Kein Gerät gefunden!",
+                    "Search" : "Suchen",
+                    "No new devices found!" : "Kein neues Gerät gefunden!",
+                    "No disconnected devices found!" : "Kein getrenntes Gerät gefunden!",
+                    "devices" : "Geräte",
+                    "DeviceID" : "GeräteID",
+                    "InstanceID" : "InstanzID",
+                    "Type" : "Typ"
+
+            }
+    }
+}

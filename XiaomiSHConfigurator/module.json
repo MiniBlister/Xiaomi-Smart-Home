@@ -1,0 +1,15 @@
+{
+    "id": "{92F6841A-BEF1-4DF2-81DF-14A91E860195}",
+    "name": "XiaomiSmartHomeConfigurator",
+    "type": 4,
+    "vendor": "Xiaomi",
+    "aliases":
+    [
+        "Xiaomi Smart Home Configurator"
+    ],  
+    "parentRequirements": ["{E496ED12-5963-4494-87F3-E537175E7418}"],
+    "childRequirements": [],
+    "implemented": ["{B75DE28A-A29F-4B11-BF9D-5CC758281F38}"],
+    "prefix": "XISMC"
+    
+}

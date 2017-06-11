@@ -1,0 +1,15 @@
+{
+    "id": "{B237D1DF-B9B0-4A8D-8EC5-B4F7A88E54FC}",
+    "name": "XiaomiSmartHomeDevice",
+    "type": 3,
+    "vendor": "Xiaomi",
+    "aliases":
+    [
+        "Xiaomi Device"
+    ],  
+    "parentRequirements": ["{E496ED12-5963-4494-87F3-E537175E7418}"],
+    "childRequirements": [],
+    "implemented": ["{B75DE28A-A29F-4B11-BF9D-5CC758281F38}"],
+    "prefix": "XISMD"
+    
+}

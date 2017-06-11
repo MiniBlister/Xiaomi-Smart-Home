@@ -1,0 +1,46 @@
+{
+    "elements":
+            [
+                {
+                    "name": "DeviceID",
+                    "type": "ValidationTextBox",
+                    "caption": "SID"
+                },
+                {
+                    "type": "Label",
+                    "label": "Additional read interval"
+                },
+                {
+                    "name": "Interval",
+                    "type": "IntervalBox",
+                    "caption": "seconds"
+                }  
+            ],
+    "actions":
+            [
+                {
+                    "type": "Button",
+                    "label": "Read Values",
+                    "onClick": "XISMD_RequestState($id);"
+                },
+                {
+                    "type": "Label",
+                    "label": "----------------------------------------"
+                },
+                {
+                    "name": "Key",
+                    "type": "ValidationTextBox",
+                    "caption": "Datapoint name"
+                },
+                {
+                    "name": "Value",
+                    "type": "ValidationTextBox",
+                    "caption": "Datapoint value"
+                },
+                {
+                    "type": "Button",
+                    "label": "Write Value",
+                    "onClick": "XISMD_WriteValueString($id, $Key, $Value);"
+                }
+            ]
+}
