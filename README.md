@@ -27,6 +27,7 @@ Folgende Geräte werden derzeit unterstützt und wurden gestestet:
   2. [Xiaomi Mi Smart Home Occupancy Sensor](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-mi-occupancy-sensor/)
   3. [Xiaomi Mi Smart Home Wireless Switch](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-mi-wireless-switch/)
   4. [Xiaomi Mi Smart Home Temperature / Humidity Sensor](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-mi-temperature-humidity-sensor/)
+
 Folgende Geräte werden prizipiell unterstützt, wurden aber noch nicht getestet:
   1. [Xiaomi Aqara Smart Light Control Set](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-aqara-smart-light-control-set/)
   2. [Xiaomi Aqara Air Conditioning Companion + Temperature / Humidity Sensor](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-aqara-air-conditioning-companion-temperature-humidity-sensor/)
