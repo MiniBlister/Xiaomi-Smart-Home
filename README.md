@@ -1,3 +1,4 @@
+
 # Xiaomi-Smart-Home
 
 Implementierung von Xiaomi Smart Home Gateway mit angeschlossenen Geräten in IP-Symcon.
@@ -20,13 +21,17 @@ Implementierung von Xiaomi Smart Home Gateway mit angeschlossenen Geräten in IP
 
 ## 1. Funktionsumfang
 
-Stellt eine Schnittstelle zum Xiaomi Smat Home Gateway her und ermöglicht es, mit dem Gateway vermundenen Geräte wie Sensoren oder Tastern ausyulesen bzw. zu steuern.
-Folgende Geräte werden derzeit unterstützt:
+Stellt eine Schnittstelle zum Xiaomi Smat Home Gateway her und ermöglicht es, mit dem Gateway verbundenen Geräte wie Sensoren oder Tastern auszulesen bzw. zu steuern.
+Folgende Geräte werden derzeit unterstützt und wurden gestestet:
   1. [Xiaomi Mi Smart Home Door / Window Sensors](https://xiaomi-mi.com/mi-smart-home/xiaomi-mi-door-window-sensors/)
   2. [Xiaomi Mi Smart Home Occupancy Sensor](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-mi-occupancy-sensor/)
   3. [Xiaomi Mi Smart Home Wireless Switch](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-mi-wireless-switch/)
   4. [Xiaomi Mi Smart Home Temperature / Humidity Sensor](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-mi-temperature-humidity-sensor/)
-
+Folgende Geräte werden prizipiell unterstützt, wurden aber noch nicht getestet:
+  1.[]()
+  2.[]()
+  3.[]()
+  4.[]()
 
 
 
