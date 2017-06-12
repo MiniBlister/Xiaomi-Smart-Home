@@ -43,9 +43,18 @@ Auch wenn diese Geräte in der Mi Home App verfügbar sind, kommunizieren sie ni
 
  - IPS ab Version 4.2
  - Xiaomi Mi Smart Home Gateway V2
- - Das Xiaomi Mi Smart Home Gatewaz muss in den Developer Modus versetzt werden, so dass ein Zugriff vom lokalen Netzwerk möglich ist. [siehe Developer Modus]((#3-developer-modus))
+ - Mi Home App installiert auf einem Android bzw. iOS Gerät 
+ - Das Xiaomi Mi Smart Home Gateway muss in den Developer Modus versetzt werden, so dass ein Zugriff vom lokalen Netzwerk möglich ist. [siehe Developer Modus]((#3-developer-modus))
    
 ## 3. Developer Modus
+
+Es ist zwigend notwenidg, dass das Mi Smart Home Gateway in einen Developer Modus versetzt wird. Dies funktioniert nur mit dem Gateway in der Version 2.
+Das Gateway wird über die Mi Home App in den Developer Modus versetzt.
+
+Android Mi Home App: https://play.google.com/store/apps/details?id=com.xiaomi.smarthome
+iOs Mi Home App: https://itunes.apple.com/us/app/mi-home-xiaomi-for-your-smarthome/id957323480?mt=8   
+
+Die App ist noch nicht vollständig auf Englisch übersetzt. Jedes Update wird diesbezüglich besser aber ab und an wird man nicht mit Chinesischen Schriftzeichen überrascht.
 
 ## 11. Lizenz  
 
