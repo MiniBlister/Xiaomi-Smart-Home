@@ -9,6 +9,7 @@ Implementierung von Xiaomi Smart Home Gateway mit angeschlossenen Geräten in IP
 
 1. [Funktionsumfang](#1-funktionsumfang) 
 2. [Voraussetzungen](#2-voraussetzungen)
+3. [Developer Modus](#3-developer-modus)
 3. [Installation](#3-installation)
 4. [Vorbereitungen](#4-vorbereitungen)
 5. [Einrichten der Instanzen in IPS](#5-einrichten-der--instanzen-in-ips)
@@ -31,11 +32,20 @@ Folgende Geräte werden derzeit unterstützt und wurden gestestet:
 Folgende Geräte werden prizipiell unterstützt, wurden aber noch nicht getestet:
   1. [Xiaomi Aqara Smart Light Control Set](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-aqara-smart-light-control-set/)
   2. [Xiaomi Aqara Air Conditioning Companion + Temperature / Humidity Sensor](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-aqara-air-conditioning-companion-temperature-humidity-sensor/)
-  3. [Xiaomi Mi Smart Socket Plug 2](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-mi-smart-socket-plug-2/)
-  4. [Xiaomi Mi Smart Socket Plug](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-mi-smart-socket-plug/)
-  5. [Xiaomi Mi Smart Home Cube](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-mi-smart-home-cube-white/)
+  3. [Xiaomi Mi Smart Socket Plug](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-mi-smart-socket-plug/)
+  4. [Xiaomi Mi Smart Home Cube](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-mi-smart-home-cube-white/)
 
+Nicht unterstützte Geräte:
+Andere Xiaomi-Geräte, die sich nicht direkt mit dem Xiaomi Gateway verbinden, wie z. B. Roboter-Vakuum, WiFi-Steckdosen, Bluetooth-Leuchten, Luftreiniger, Wasserkocher usw. 
+Auch wenn diese Geräte in der Mi Home App verfügbar sind, kommunizieren sie nicht direkt mit dem Gateway.
 
+## 2. Voraussetzungen
+
+ - IPS ab Version 4.2
+ - Xiaomi Mi Smart Home Gateway V2
+ - Das Xiaomi Mi Smart Home Gatewaz muss in den Developer Modus versetzt werden, so dass ein Zugriff vom lokalen Netzwerk möglich ist. [siehe Developer Modus]((#3-developer-modus))
+   
+## 3. Developer Modus
 
 ## 11. Lizenz  
 
