@@ -10,15 +10,15 @@ Implementierung von Xiaomi Smart Home Gateway mit angeschlossenen Geräten in IP
 1. [Funktionsumfang](#1-funktionsumfang) 
 2. [Voraussetzungen](#2-voraussetzungen)
 3. [Developer Modus](#3-developer-modus)
-3. [Installation](#3-installation)
-4. [Vorbereitungen](#4-vorbereitungen)
-5. [Einrichten der Instanzen in IPS](#5-einrichten-der--instanzen-in-ips)
-6. [Funktionen der Instanzen] (#6-funktionen-der-instanzen)
-7. [PHP-Befehlsreferenz](#7-php-befehlsreferenz) 
-8. [Parameter / Modul-Infos](#8-parameter--modul-infos) 
-9. [Tips & Tricks](#9-tips--tricks) 
-10. [Anhang](#10-anhang)
-11. [Lizenz] (#11-lizenz)
+4. [Installation](#4-installation)
+5. [Vorbereitungen](#5-vorbereitungen)
+6. [Einrichten der Instanzen in IPS](#6-einrichten-der--instanzen-in-ips)
+7. [Funktionen der Instanzen] (#7-funktionen-der-instanzen)
+8. [PHP-Befehlsreferenz](#8-php-befehlsreferenz) 
+9. [Parameter / Modul-Infos](#8-parameter--modul-infos) 
+10. [Tips & Tricks](#10-tips--tricks) 
+11. [Anhang](#11-anhang)
+12. [Lizenz](#12-lizenz)
 
 ## 1. Funktionsumfang
 
@@ -30,10 +30,10 @@ Folgende Geräte werden derzeit unterstützt und wurden gestestet:
   4. [Xiaomi Mi Smart Home Temperature / Humidity Sensor](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-mi-temperature-humidity-sensor/)
 
 Folgende Geräte werden prizipiell unterstützt, wurden aber noch nicht getestet:
-  1. [Xiaomi Aqara Smart Light Control Set](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-aqara-smart-light-control-set/)
-  2. [Xiaomi Aqara Air Conditioning Companion + Temperature / Humidity Sensor](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-aqara-air-conditioning-companion-temperature-humidity-sensor/)
-  3. [Xiaomi Mi Smart Socket Plug](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-mi-smart-socket-plug/)
-  4. [Xiaomi Mi Smart Home Cube](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-mi-smart-home-cube-white/)
+  5. [Xiaomi Aqara Smart Light Control Set](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-aqara-smart-light-control-set/)
+  6. [Xiaomi Aqara Air Conditioning Companion + Temperature / Humidity Sensor](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-aqara-air-conditioning-companion-temperature-humidity-sensor/)
+  7. [Xiaomi Mi Smart Socket Plug](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-mi-smart-socket-plug/)
+  8. [Xiaomi Mi Smart Home Cube](https://xiaomi-mi.com/sockets-and-sensors/xiaomi-mi-smart-home-cube-white/)
 
 Nicht unterstützte Geräte:
 Andere Xiaomi-Geräte, die sich nicht direkt mit dem Xiaomi Gateway verbinden, wie z. B. Roboter-Vakuum, WiFi-Steckdosen, Bluetooth-Leuchten, Luftreiniger, Wasserkocher usw. 
