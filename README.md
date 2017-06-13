@@ -94,10 +94,10 @@ Das Gerät besitzt zu Beginn keine Varriablen. Diese werden jedoch automatisch e
 
 ## 7. Funktionen der Instanzen
 
-Folgenden Funktionen bzw. Daten werden derzeit unterstÃ¼tzt.
+Folgenden Funktionen bzw. Daten werden derzeit unterstützt.
 
 | Device                        | Typ       | Beschreibung                            |
-|:-----------------------------:|:---------:|:---------------------------------------:|
+|:------------------------------|:----------|:----------------------------------------|
 | Door / Window Sensors         | Float     | Voltage (x.xV)                          |
 |                               | Boolean   | Status (Offen/Geschlossen)              |
 | Occupancy Sensor              | Float     | Voltage (x.xV)                          |
