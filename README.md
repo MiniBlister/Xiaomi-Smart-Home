@@ -57,14 +57,58 @@ iOs Mi Home App: https://itunes.apple.com/us/app/mi-home-xiaomi-for-your-smartho
 Die App ist noch nicht vollständig auf Englisch übersetzt. Jedes Update wird diesbezüglich besser aber ab und an wird man nicht mit Chinesischen Schriftzeichen überrascht.
 
   - Installiere die App auf einem Android-Gerät oder iOS-Gerät 
-  - Stellen Sie sicher, dass Sie Ihre Region auf: Festland China unter Einstellungen -> Locale
-  - Sprache kann auf Englisch einstellt werden
-  - Wähle dein Gateway in Mi Home 
-  - Dann die 3 Punkte oben rechts auf dem Bildschirm klicken 
-  - Tippe auf die Version (2.23 ist die aktuelle Android-Version ab 8. März 2017) Nummer am unteren Rand des Bildschirms wiederholt 
+  - als Region bitte Festland China unter Einstellungen -> Locale
+  - Sprache kann hier auf Englisch eingestellt werden
+  - Wähle dein Gateway in Mi Home App 
+  - am oberen rechten Bildschirm die 3 Punkte klicken 
+  - Tippe auf die Version (2.23 ist die aktuelle Android-Version ab 8. März 2017) Nummer am unteren Rand des Bildschirms widerholt 
   - jetzt sollten 2 zusätzliche Optionen auf Englisch (war Chinesisch in früheren Versionen) erscheinen, bis der Entwickler-Modus aktiviert ist. [Wenn nicht alle Schritte wieder versuchen!] 
   - Wählen Sie die erste neue Option Tippen Sie dann auf den ersten Toggle-Schalter, um LAN-Funktionen zu aktivieren.  
 
+## 4. Installation
+
+Die Installation in IP-Symcon ist relativ einfach. Das Modul muss IP-Symcon als Modul zu Verfügung stehen.
+Dazu bitte den folgenden Link in IP-Symcon unter Core->Modules eintragen.
+
+## 5. Vorbereitungen
+
+Nachdem das Modul erfolgreich installiert wurden, muss eine Konfigurator Instanz erstellt werden.
+Dazu in IP-SYMCON eine Instanz des Typ Konfigurator erstellt. 
+Diese erstellt automatisch einen Splitter und eine I/O Instanz.
+Die Kommunikation zum Gateway erfolgt über einen Multicast Socket, welcher automatisch erstellt, jedoch konfiguriert werden muss.
+
+IP Adresse: muss am Router ermittelt werden und hier eingegeben werden
+Multicast IP: 
+Multicast Port:
+
+Nachdem die I/O Instanz konfiguriert ist, werden im Konfigurator alle mit dem Gateway verbundenen Geräte angezeigt. 
+Wie ein Gerät an das Gateway angebunden wird, kann der Mi Home App entnommen werden.
+Die in der Mi Home App hinterlegten Informationen wie Name oder Raum in welchem sich das Gerät befindet, werden in der API nicht zu Verfügung gestellt und stehen damit IP-Symcon ebenfalls nicht zu Verfügung. 
+
+## 6. Erstellen einer Geräte Instanz in IPS
+
+Das Erstellen eines Gerätes ist aus dem Konfigurator heraus leicht möglich. 
+Dazu bitte die Zeile in der Liste auswählen für welches ein Gerät erstellt werden soll und mit Hinzugefügt bestätigen.
+Leider bietet IP-Symcon noch keine Möglichkeit von dynamischen Listen, daher muss der Konfigurator einmal geschlossen und wieder geöffnet werden um die Änderung sichtbar zu machen. 
+Das Gerät besitzt zu Beginn keine Varriablen. Diese werden jedoch automatisch erstellt sobald der Wert vom Gateway zu Verfügung gestellt wird. Dies kann durch ein regelmässiges Lesen der Daten oder durch eine aktive Betätigung eines Tasten Befehls am Switch durch den Benutzer geschehen.
+
+## 7. Funktionen der Instanzen
+
+Folgenden Funktionen bzw. Daten werden derzeit unterstÃ¼tzt.
+
+| Device                        | Typ       | Beschreibung                            |
+|:-----------------------------:|:---------:|:---------------------------------------:|
+| Door / Window Sensors         | Float     | Voltage (x.xV)                          |
+|                               | Boolean   | Status (Offen/Geschlossen)              |
+| Occupancy Sensor              | Float     | Voltage (x.xV)                          |
+|                               | Boolean   | Status (Bewegung erkannt/nicht erkannt) |
+| Temperature / Humidity Sensor | Float     | Humidity (xx.x%)                        |
+|                               | Float     | Temperature (xx.x°C)                    |
+| Wireless Switch               | Float     | Voltage (x.xV)                          |
+|                               | Boolean   | Status Click                            | 
+|                               | Boolean   | Status Double Click                     | 
+|                               | Boolean   | Status Long Click Press                 |
+|                               | Boolean   | Status Long Click Release               |    
 
 ## 11. Lizenz  
 
