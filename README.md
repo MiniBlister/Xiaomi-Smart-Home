@@ -99,16 +99,16 @@ Folgenden Funktionen bzw. Daten werden derzeit unterstützt.
 | Device                        | Typ       | Beschreibung                            |
 |:------------------------------|:----------|:----------------------------------------|
 | Door / Window Sensors         | Float     | Voltage (x.xV)                          |
-|                               | Boolean   | Status (Offen/Geschlossen)              |
+| Door / Window Sensors         | Boolean   | Status (Offen/Geschlossen)              |
 | Occupancy Sensor              | Float     | Voltage (x.xV)                          |
-|                               | Boolean   | Status (Bewegung erkannt/nicht erkannt) |
+| Occupancy Sensor              | Boolean   | Status (Bewegung erkannt/nicht erkannt) |
 | Temperature / Humidity Sensor | Float     | Humidity (xx.x%)                        |
-|                               | Float     | Temperature (xx.x°C)                    |
+| Temperature / Humidity Sensor | Float     | Temperature (xx.x°C)                    |
 | Wireless Switch               | Float     | Voltage (x.xV)                          |
-|                               | Boolean   | Status Click                            | 
-|                               | Boolean   | Status Double Click                     | 
-|                               | Boolean   | Status Long Click Press                 |
-|                               | Boolean   | Status Long Click Release               |    
+| Wireless Switch               | Boolean   | Status Click                            | 
+| Wireless Switch               | Boolean   | Status Double Click                     | 
+| Wireless Switch               | Boolean   | Status Long Click Press                 |
+| Wireless Switch               | Boolean   | Status Long Click Release               |    
 
 ## 11. Lizenz  
 
