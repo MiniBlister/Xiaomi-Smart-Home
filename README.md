@@ -56,6 +56,16 @@ iOs Mi Home App: https://itunes.apple.com/us/app/mi-home-xiaomi-for-your-smartho
 
 Die App ist noch nicht vollständig auf Englisch übersetzt. Jedes Update wird diesbezüglich besser aber ab und an wird man nicht mit Chinesischen Schriftzeichen überrascht.
 
+  - Installiere die App auf einem Android-Gerät oder iOS-Gerät 
+  - Stellen Sie sicher, dass Sie Ihre Region auf: Festland China unter Einstellungen -> Locale
+  - Sprache kann auf Englisch einstellt werden
+  - Wähle dein Gateway in Mi Home 
+  - Dann die 3 Punkte oben rechts auf dem Bildschirm klicken 
+  - Tippe auf die Version (2.23 ist die aktuelle Android-Version ab 8. März 2017) Nummer am unteren Rand des Bildschirms wiederholt 
+  - jetzt sollten 2 zusätzliche Optionen auf Englisch (war Chinesisch in früheren Versionen) erscheinen, bis der Entwickler-Modus aktiviert ist. [Wenn nicht alle Schritte wieder versuchen!] 
+  - Wählen Sie die erste neue Option Tippen Sie dann auf den ersten Toggle-Schalter, um LAN-Funktionen zu aktivieren.  
+
+
 ## 11. Lizenz  
 
 [CC BY-NC-SA 4.0] (https://creativecommons.org/licenses/by-nc-sa/4.0/) 
