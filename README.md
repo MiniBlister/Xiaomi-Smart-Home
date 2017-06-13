@@ -99,6 +99,7 @@ Folgenden Funktionen bzw. Daten werden derzeit unterstützt.
 | Device                        | Typ       | Beschreibung                            |
 |:------------------------------|:----------|:----------------------------------------|
 | Door / Window Sensors         | Float     | Voltage (x.xV)                          |
+                                            | test                                    |
 |                               | Boolean   | Status (Offen/Geschlossen)              |
 | Occupancy Sensor              | Float     | Voltage (x.xV)                          |
 |                               | Boolean   | Status (Bewegung erkannt/nicht erkannt) |
