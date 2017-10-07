@@ -1,6 +1,7 @@
 <?php
 
 include_once(__DIR__ . "/../XiaomTraits.php");
+
 /**
  * XiaomiDevice Klasse für die Abbildung eines Gerätes am Xiaomi Gatewayd in IPS.
  * Erweitert IPSModule.
@@ -9,10 +10,12 @@ include_once(__DIR__ . "/../XiaomTraits.php");
  */
 class XiaomiSmartHomeDevice extends ipsmodule
 {
+
     use BufferHelper,
         DebugHelper,
         VariableHelper,
         VariableProfile;
+
     /**
      * Profile der Statusvariablen
      * 
@@ -20,15 +23,34 @@ class XiaomiSmartHomeDevice extends ipsmodule
      * @var array 
      */
     static $StatusvarProfile = array(
-        "ctrl_neutral1" => array("channel_0" => "~Switch"),
-        "ctrl_neutral2" => array("channel_0" => "~Switch", "channel_1" => "~Switch"),
-        "86sw1" => array("click" => "", "double_click" => ""),
-        "" => array("click" => "", "double_click" => ""),
-        "86sw2" => array("channel_0_click" => "", "channel_0_double_click" => "",
-            "channel_1_click" => "", "channel_1_double_click" => "",
-            "dual_channel_both_click " => ""),
-        "sensor_ht" => array("temperature" => "~Temperature", "humidity" => "~Humidity.F"),
-        "rgbw_light" => array("status" => "~Switch", "level" => "~Intensity.255"),
+        "ctrl_neutral1" => array(
+            "channel_0" => "~Switch"
+        ),
+        "ctrl_neutral2" => array(
+            "channel_0" => "~Switch",
+            "channel_1" => "~Switch"
+        ),
+        "86sw1" => array(
+            "click" => "",
+            "double_click" => "",
+            "voltage" => "~Volt"
+        ),
+        "86sw2" => array(
+            "channel_0_click" => "",
+            "channel_0_double_click" => "",
+            "channel_1_click" => "",
+            "channel_1_double_click" => "",
+            "dual_channel_both_click" => "",
+            "voltage" => "~Volt"
+        ),
+        "sensor_ht" => array(
+            "temperature" => "~Temperature",
+            "humidity" => "~Humidity.F"
+        ),
+        "rgbw_light" => array(
+            "status" => "~Switch",
+            "level" => "~Intensity.255"
+        ),
         /*         FEHLT inkl. RGB umrechnung für IPS HexColor
           color_temperature	Color Temperature Mired
           x	Current X
@@ -36,12 +58,67 @@ class XiaomiSmartHomeDevice extends ipsmodule
           saturation	Current Saturation
           hue	Current Hue
          */
-        "magnet" => array("status" => "~Window", "voltage" => "~Volt"),
-        "motion" => array("status" => "~Motion", "voltage" => "~Volt"),
-        "plug" => array("status" => "~Switch", "load_voltage" => "",
-            "load_power" => "", "power_consumed" => ""),
-        "switch" => array("status_click" => "~Switch", "status_double_click" => "~Switch", "status_long_click_press" => "~Switch", "status_long_click_release" => "~Switch", "voltage" => "~Volt")
+        "magnet" => array(
+            "status" => "~Window",
+            "voltage" => "~Volt"
+        ),
+        "motion" => array(
+            "status" => "~Motion",
+            "lux" => "~Illumination",
+            "voltage" => "~Volt"
+        ),
+        "plug" => array(
+            "status" => "~Switch",
+            "load_voltage" => "",
+            "load_power" => "",
+            "power_consumed" => ""
+        ),
+        "switch" => array(
+            "status_click" => "~Switch",
+            "status_double_click" => "~Switch",
+            "status_long_click_press" => "~Switch",
+            "status_long_click_release" => "~Switch",
+            "voltage" => "~Volt"
+        ),
+        "weather.v1" => array(
+            "pressure" => "~AirPressure.F",
+            "temperature" => "~Temperature",
+            "humidity" => "~Humidity.F",
+            "voltage" => "~Volt"
+        ),
+        "sensor_switch.aq2" => array(
+            "status_click" => "",
+            "status_double_click" => "",
+            "voltage" => "~Volt"
+        ),
+        "sensor_motion.aq2" => array(
+            "status" => "~Motion",
+            "lux" => "~Illumination",
+            "voltage" => "~Volt"
+        ),
+        "sensor_magnet.aq2" => array(
+            "status" => "~Window",
+            "voltage" => "~Volt"
+        ),
+        "cube" => array(
+            "status_shake_air" => "",
+            "status_free_fall" => "",
+            "status_move" => "",
+            "status_tap_twice" => "",
+            "status_flip90" => "",
+            "status_flip180" => "",
+            "status_alert" => "",
+            "status_swing" => "",
+            "status_iam" => "",
+            "rotate" => "",
+            "voltage" => "~Volt"
+        ),
+        "gateway" => array(
+            "rgb" => "~HexColor",
+            "lux" => "~Illumination"
+        )
     );
+
     /**
      * Standardaktionen der Statusvariablen
      * 
@@ -61,6 +138,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
          */
         "plug" => array("status")
     );
+
 // Überschreibt die interne IPS_Create($id) Funktion
     public function Create()
     {
@@ -73,39 +151,47 @@ class XiaomiSmartHomeDevice extends ipsmodule
         $this->RegisterTimer('RequestState', 0, 'XISMD_RequestState($_IPS[\'TARGET\']);');
         $this->model = "";
     }
+
 // Überschreibt die intere IPS_ApplyChanges($id) Funktion
     public function ApplyChanges()
     {
-        // Diese Zeile nicht löschen
+// Diese Zeile nicht löschen
         parent::ApplyChanges();
-        //Nur Daten empfangen in ReceiveData für mein Gerät
+//Nur Daten empfangen in ReceiveData für mein Gerät
         $sid = $this->ReadPropertyString("DeviceID");
         $this->SetReceiveDataFilter('(.*\\\"sid\\\":\\\"' . $sid . '\\\".*|.*"STARTUP":"RUN".*)');
-        // IPS fertig gestartet ?
+// IPS fertig gestartet ?
         if (IPS_GetKernelRunlevel() <> KR_READY)
             return;
         if (trim($sid) == "") // Keine SID, dann kein Timer aktiv
             $this->SetTimerInterval('RequestState', 0);
         else
         {
-            // Daten anfordern bei Übernehmen
+// Daten anfordern bei Übernehmen
             $this->model = "";
             $this->RequestState();
-            // Timer an
+// Timer an
             $this->SetTimerInterval('RequestState', $this->ReadPropertyInteger('Interval') * 1000);
         }
     }
+
     public function RequestState()
     {
         $Result = $this->Send('read');
         if ($Result === false)
             return false;
+        if (!array_key_exists($this->model, self::$StatusvarProfile))
+        {
+            $this->SendDebug('unknown model', $this->model, 0);
+            return false;
+        }
         foreach ($Result as $Ident => $Value)
         {
             $this->Decode($Ident, $Value);
         }
         return true;
     }
+
     public function RequestAction($Ident, $Value)
     {
         $WriteValue = NULL;
@@ -120,7 +206,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
                     $WriteValue = ($Value === true) ? "on" : "off";
                 if ($Ident == "level")
                     $WriteValue = (string) $Value;
-                // Rest fehlt
+// Rest fehlt
                 break;
             case 'plug':
                 if ($Ident == "status")
@@ -142,6 +228,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
         if ($WriteValue !== NULL)
             $this->WriteValue($Ident, $WriteValue);
     }
+
     public function WriteValueBoolean(string $Ident, bool $Value)
     {
         if (!is_bool($Value))
@@ -152,6 +239,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
         $WriteValue = ($Value === true) ? "on" : "off";
         return $this->WriteValue($Ident, $WriteValue);
     }
+
     public function WriteValueInteger(string $Ident, int $Value)
     {
         if (!is_integer($Value))
@@ -161,6 +249,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
         }
         return $this->WriteValue($Ident, (string) $Value);
     }
+
     public function WriteValueFloat(string $Ident, float $Value)
     {
         if (!is_float($Value))
@@ -170,22 +259,30 @@ class XiaomiSmartHomeDevice extends ipsmodule
         }
         return $this->WriteValue($Ident, (string) $Value);
     }
+
     public function WriteValueString(string $Ident, string $Value)
     {
         return $this->WriteValue($Ident, (string) $Value);
     }
+
     private function WriteValue($Ident, $Value)
     {
         $Data[$Ident] = $Value;
         $Result = $this->Send('write', $Data);
         if ($Result === false)
             return false;
+        if (!array_key_exists($this->model, self::$StatusvarProfile))
+        {
+            $this->SendDebug('unknown model', $this->model, 0);
+            return false;
+        }
         foreach ($Result as $Ident => $Value)
         {
             $this->Decode($Ident, $Value);
         }
         return true;
     }
+
     public function ReceiveData($JSONString)
     {
         $alldata = json_decode($JSONString);
@@ -203,20 +300,31 @@ class XiaomiSmartHomeDevice extends ipsmodule
         }
         $data = json_decode($alldata->data);
         $this->SendDebug("Receive", $data, 0);
+        if (!array_key_exists($this->model, self::$StatusvarProfile))
+        {
+            $this->SendDebug('unknown model', $this->model, 0);
+            return;
+        }
         foreach ($data as $Ident => $Value)
         {
             $this->Decode($Ident, $Value);
         }
     }
+
     private function Decode($Ident, $Value)
     {
         $Ident = trim($Ident);
         $this->SendDebug('Decode todo 1: ' . $Ident, $Value, 0);
+
         if ((!array_key_exists($Ident, self::$StatusvarProfile[$this->model])) && !array_key_exists($Ident . "_" . trim($Value), self::$StatusvarProfile[$this->model]))
         {
             $this->SendDebug('Decode todo 2: ' . $Ident, $Value, 0);
             return;
         }
+
+        if ($Ident == "voltage")
+            return $this->SetValueFloat($Ident, intval($Value) / 1000);
+
         switch ($this->model)
         {
             case 'ctrl_neutral1':
@@ -231,39 +339,51 @@ class XiaomiSmartHomeDevice extends ipsmodule
                 return $this->SetValueFloat($Ident, intval($Value) / 100);
             case 'rgbw_light':
                 if ($Ident == "status")
-                    $this->SetValueBoolean($Ident, ($Value == "on") ? true : false);
+                    return $this->SetValueBoolean($Ident, ($Value == "on") ? true : false);
                 if ($Ident == "level")
-                    $this->SetValueInteger($Ident, intval($Value));
-                // if ($Ident == "") // Hue Sat Temp X Y fehlt
-                return;
+                    return $this->SetValueInteger($Ident, intval($Value));
+// if ($Ident == "") // Hue Sat Temp X Y fehlt
+                break;
             case 'magnet':
-                if ($Ident == "status")
-                    $this->SetValueBoolean($Ident, ($Value == "open") ? true : false);
-                if ($Ident == "voltage")
-                    $this->SetValueFloat($Ident, intval($Value) / 1000);
-                return;
+            case 'sensor_magnet.aq2':
+                return $this->SetValueBoolean($Ident, ($Value == "open") ? true : false);
             case 'motion':
+            case 'sensor_motion':
                 if ($Ident == "status")
-                    $this->SetValueBoolean($Ident, ($Value == "motion") ? true : false);
-                if ($Ident == "voltage")
-                    $this->SetValueFloat($Ident, intval($Value) / 1000);
-                return;
+                    return $this->SetValueBoolean($Ident, ($Value == "motion") ? true : false);
+                if ($Ident == "lux")
+                    return $this->SetValueInteger($Ident, (int) $Value);
+                break;
             case 'plug':
                 if ($Ident == "status")
-                    $this->SetValueBoolean($Ident, ($Value == "on") ? true : false);
-                if ($Ident == "voltage")
-                    $this->SetValueFloat($Ident, intval($Value) / 1000);
+                    return $this->SetValueBoolean($Ident, ($Value == "on") ? true : false);
                 if (($Ident == "load_power") || ($Ident == "power_consumed"))
-                    $this->SetValueFloat($Ident, floatval($Value));
-                return;
+                    return $this->SetValueFloat($Ident, floatval($Value));
+                break;
             case 'switch':
                 if ($Ident == "status")
-                    $this->SetValueBoolean($Ident.'_'.trim($Value), true);
-                if ($Ident == "voltage")
-                    $this->SetValueFloat($Ident, intval($Value) / 1000);
-                return;
+                    return $this->SetValueBoolean($Ident . '_' . trim($Value), true);
+                break;
+            case 'weather.v1':
+                if ($Ident == "pressure")
+                    return $this->SetValueFloat($Ident, intval($Value) / 1000);
+                else
+                    return $this->SetValueFloat($Ident, intval($Value) / 100);
+                break;
+            case 'sensor_switch.aq2':
+                return $this->SetValueBoolean($Ident . "_" . trim($Value), true);
+            case 'cube':
+                if ($Ident == "rotate")
+                    return; // TODO
+                else
+                    return $this->SetValueBoolean($Ident . '_' . trim($Value), true);
+                break;
+            case 'gateway':
+                return $this->SetValueInteger($Ident, (int) $Value);
+                break;
         }
     }
+
     private function Send(string $Command, string $Data = NULL)
     {
         $SendData = array("DataID" => "{E496ED12-5963-4494-87F3-E537175E7418}",
@@ -299,5 +419,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
         unset($Result['model']);
         return $Result;
     }
+
 }
+
 ?>
