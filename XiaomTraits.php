@@ -444,7 +444,7 @@ trait VariableHelper
         if ($vid === false)
         {
             $Profile = (array_key_exists($Ident, self::$StatusvarProfile[$this->model]) ? self::$StatusvarProfile[$this->model][$Ident] : "");
-            $this->MaintainVariable($Ident, $Ident, $Type, $Profile, $Position, true);
+            $this->MaintainVariable($Ident, $Ident, $Type, $Profile, 0, true);
             if (array_key_exists($this->model, self::$StatusvarAction))
                 if (array_key_exists($Ident, self::$StatusvarAction[$this->model]))
                     $this->EnableAction($Ident);
