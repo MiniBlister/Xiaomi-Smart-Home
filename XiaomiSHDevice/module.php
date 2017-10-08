@@ -33,7 +33,8 @@ class XiaomiSmartHomeDevice extends ipsmodule
         "86sw1" => array(
             "click" => "",
             "double_click" => "",
-            "voltage" => "~Volt"
+            "voltage" => "~Volt",
+            "voltage_percent" => "~Battery.100"
         ),
         "86sw2" => array(
             "channel_0_click" => "",
@@ -41,7 +42,8 @@ class XiaomiSmartHomeDevice extends ipsmodule
             "channel_1_click" => "",
             "channel_1_double_click" => "",
             "dual_channel_both_click" => "",
-            "voltage" => "~Volt"
+            "voltage" => "~Volt",
+            "voltage_percent" => "~Battery.100"
         ),
         "sensor_ht" => array(
             "temperature" => "~Temperature",
@@ -60,12 +62,14 @@ class XiaomiSmartHomeDevice extends ipsmodule
          */
         "magnet" => array(
             "status" => "~Window",
-            "voltage" => "~Volt"
+            "voltage" => "~Volt",
+            "voltage_percent" => "~Battery.100"
         ),
         "motion" => array(
             "status" => "~Motion",
             "lux" => "~Illumination",
-            "voltage" => "~Volt"
+            "voltage" => "~Volt",
+            "voltage_percent" => "~Battery.100"
         ),
         "plug" => array(
             "status" => "~Switch",
@@ -78,27 +82,34 @@ class XiaomiSmartHomeDevice extends ipsmodule
             "status_double_click" => "~Switch",
             "status_long_click_press" => "~Switch",
             "status_long_click_release" => "~Switch",
-            "voltage" => "~Volt"
+            "voltage" => "~Volt",
+            "voltage_percent" => "~Battery.100"
         ),
         "weather.v1" => array(
             "pressure" => "~AirPressure.F",
             "temperature" => "~Temperature",
             "humidity" => "~Humidity.F",
-            "voltage" => "~Volt"
+            "voltage" => "~Volt",
+            "voltage_percent" => "~Battery.100"
         ),
         "sensor_switch.aq2" => array(
             "status_click" => "",
             "status_double_click" => "",
-            "voltage" => "~Volt"
+            "voltage" => "~Volt",
+            "voltage_percent" => "~Battery.100"
         ),
         "sensor_motion.aq2" => array(
             "status" => "~Motion",
             "lux" => "~Illumination",
-            "voltage" => "~Volt"
+            "voltage" => "~Volt",
+            "voltage_percent" => "~Battery.100",
+            "no_motion" => ""
         ),
         "sensor_magnet.aq2" => array(
             "status" => "~Window",
-            "voltage" => "~Volt"
+            "voltage" => "~Volt",
+            "voltage_percent" => "~Battery.100",
+            "no_close" => ""
         ),
         "cube" => array(
             "status_shake_air" => "",
@@ -111,7 +122,8 @@ class XiaomiSmartHomeDevice extends ipsmodule
             "status_swing" => "",
             "status_iam" => "",
             "rotate" => "",
-            "voltage" => "~Volt"
+            "voltage" => "~Volt",
+            "voltage_percent" => "~Battery.100"
         ),
         "gateway" => array(
             "rgb" => "~HexColor",
@@ -323,7 +335,11 @@ class XiaomiSmartHomeDevice extends ipsmodule
         }
 
         if ($Ident == "voltage")
-            return $this->SetValueFloat($Ident, intval($Value) / 1000);
+        {
+            $this->SetValueFloat("voltage", intval($Value) / 1000);
+            $this->SetValueInteger("voltage_percent", (int) (intval($Value) / 40));
+            return;
+        }
 
         switch ($this->model)
         {
@@ -346,12 +362,17 @@ class XiaomiSmartHomeDevice extends ipsmodule
                 break;
             case 'magnet':
             case 'sensor_magnet.aq2':
-                return $this->SetValueBoolean($Ident, ($Value == "open") ? true : false);
+                if ($Ident == "status")
+                    return $this->SetValueBoolean($Ident, ($Value == "open") ? true : false);
+                if ($Ident == "no_close")
+                    return $this->SetValueInteger($Ident, (int) $Value);
             case 'motion':
-            case 'sensor_motion':
+            case 'sensor_motion.aq2':
                 if ($Ident == "status")
                     return $this->SetValueBoolean($Ident, ($Value == "motion") ? true : false);
                 if ($Ident == "lux")
+                    return $this->SetValueInteger($Ident, (int) $Value);
+                if ($Ident == "no_motion")
                     return $this->SetValueInteger($Ident, (int) $Value);
                 break;
             case 'plug':
@@ -366,7 +387,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
                 break;
             case 'weather.v1':
                 if ($Ident == "pressure")
-                    return $this->SetValueFloat($Ident, intval($Value) / 1000);
+                    return $this->SetValueFloat($Ident, intval($Value) / 10);
                 else
                     return $this->SetValueFloat($Ident, intval($Value) / 100);
                 break;
@@ -374,7 +395,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
                 return $this->SetValueBoolean($Ident . "_" . trim($Value), true);
             case 'cube':
                 if ($Ident == "rotate")
-                    return; // TODO
+                    return $this->SetValueInteger($Ident, (int) (explode(',', $Value)[0] * 3.33));
                 else
                     return $this->SetValueBoolean($Ident . '_' . trim($Value), true);
                 break;
