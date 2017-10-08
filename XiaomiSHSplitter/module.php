@@ -3,6 +3,7 @@
 // SendDataToParent (79827379-F36E-4ADA-8A95-5F8D1DC92FA9)
 // SendDateToChild (B75DE28A-A29F-4B11-BF9D-5CC758281F38)
 include_once(__DIR__ . "/../XiaomTraits.php");
+
 /**
  * bla bla bla Erklärung Doku bla
  * 
@@ -14,6 +15,7 @@ include_once(__DIR__ . "/../XiaomTraits.php");
  */
 class XiaomiSmartHomeSplitter extends ipsmodule
 {
+
     // use fügt bestimmte Traits dieser Klasse hinzu.
     use BufferHelper, // Enthält die Magische Methoden __get und __set damit wir bequem auf die Instanz-Buffer zugreifen können.
         Semaphore, // Sorgt dafür dass nicht mehrere Threads gleichzeitig auf z.B. den Buffer zugreifen.
@@ -23,6 +25,7 @@ class XiaomiSmartHomeSplitter extends ipsmodule
         InstanceStatus::MessageSink as IOMessageSink; // MessageSink gibt es sowohl hier in der Klasse, als auch im Trait InstanceStatus. Hier wird für die Methode im Trait ein Alias benannt.
         InstanceStatus::RegisterParent as IORegisterParent; // MessageSink gibt es sowohl hier in der Klasse, als auch im Trait InstanceStatus. Hier wird für die Methode im Trait ein Alias benannt.
     }
+
     // public $sidmode; // Das geht nicht, da alle Daten flüchtig sind!
     // Mit __set und  __get wird der SetBuffer und GetBuffer genutzt (siehe BufferHelper Trait)
     /**
@@ -41,6 +44,7 @@ class XiaomiSmartHomeSplitter extends ipsmodule
         $this->sid = "";
         $this->SendQueue = array();
     }
+
     // Überschreibt die intere IPS_ApplyChanges($id) Funktion
     public function ApplyChanges()
     {
@@ -55,13 +59,14 @@ class XiaomiSmartHomeSplitter extends ipsmodule
             return;
         // SendQueue leeren
         $this->SendQueue = array();
-        $this->GatewayIP="";
-        
+        $this->GatewayIP = "";
+
         // Unseren Parent merken und auf dessen Statusänderungen registrieren.
         $this->RegisterParent();
         if ($this->HasActiveParent())
             $this->IOChangeState(IS_ACTIVE);
     }
+
     /**
      * Interne Funktion des SDK.
      * Verarbeitet alle Nachrichten auf die wir uns registriert haben.
@@ -79,6 +84,7 @@ class XiaomiSmartHomeSplitter extends ipsmodule
                 break;
         }
     }
+
     /**
      * Wird ausgeführt wenn der Kernel hochgefahren wurde.
      * @access protected
@@ -88,6 +94,7 @@ class XiaomiSmartHomeSplitter extends ipsmodule
         if ($this->HasActiveParent())
             $this->IOChangeState(IS_ACTIVE);
     }
+
     /**
      * Überschreibt RegisterParent aus dem Trait InstanceStatus
      */
@@ -95,10 +102,11 @@ class XiaomiSmartHomeSplitter extends ipsmodule
     {
         $this->IORegisterParent();
         if ($this->ParentID > 0)
-            $this->GatewayIP = IPS_GetProperty ($this->ParentID, 'Host');
+            $this->GatewayIP = IPS_GetProperty($this->ParentID, 'Host');
         else
-            $this->GatewayIP="";
+            $this->GatewayIP = "";
     }
+
     /**
      * Wird über den Trait InstanceStatus ausgeführt wenn sich der Status des Parent ändert.
      * Oder wenn sich die Zuordnung zum Parent ändert.
@@ -118,6 +126,7 @@ class XiaomiSmartHomeSplitter extends ipsmodule
             $this->SetTimerInterval('KeepAlive', 0); // Und kein Keep-Alive mehr.
         }
     }
+
     /**
      * Interne Funktion des SDK.
      * Wird von der Console aufgerufen, wenn 'unser' IO-Parent geöffnet wird.
@@ -134,6 +143,7 @@ class XiaomiSmartHomeSplitter extends ipsmodule
         $Config['EnableLoopback'] = false;
         return json_encode($Config);
     }
+
     /** Wird vom Timer aufgerufen, sollte NIE passieren, da wir den Timer bei jedem heartbeat zurücksetzen.
      *  Wenn der Timer also auslöst, ist das Gateway offline :(
      */
@@ -142,6 +152,7 @@ class XiaomiSmartHomeSplitter extends ipsmodule
         $this->SetStatus(IS_EBASE + 3);
         $this->SetTimerInterval('KeepAlive', 0); // Und kein Keep-Alive mehr.
     }
+
     /** Einmal allen verbundenen Devices die Konfig übernehmen, damit sie ihre Stati holen können.
      * 
      */
@@ -149,6 +160,7 @@ class XiaomiSmartHomeSplitter extends ipsmodule
     {
         $this->SendDataToChildren(json_encode(Array("DataID" => "{B75DE28A-A29F-4B11-BF9D-5CC758281F38}", "STARTUP" => "RUN")));
     }
+
     /** Aktuell nur zum testen, später wird diese Funktion private und über ForwardData vom Konfigurator ausgeführt.
      * 
      * @return array
@@ -157,6 +169,7 @@ class XiaomiSmartHomeSplitter extends ipsmodule
     {
         return $this->Send("get_id_list");
     }
+
     // Von Device kommend, mit Send versenden und die Antwort zurückgeben.
     public function ForwardData($JSONString)
     {
@@ -177,6 +190,7 @@ class XiaomiSmartHomeSplitter extends ipsmodule
         // Antwort (Array) serialisiert zurück an den Child mit return
         return serialize($result);
     }
+
     /** Versenden
      * 
      * @param type $cmd
@@ -240,6 +254,7 @@ class XiaomiSmartHomeSplitter extends ipsmodule
         $this->SendDebug('Result', $Result, 0);
         return $Result;
     }
+
     private function UpdateQueue($cmd, $sid, $data, $model)
     {
         if (isset($this->SendQueue[$sid][$cmd]))
@@ -250,6 +265,7 @@ class XiaomiSmartHomeSplitter extends ipsmodule
             $this->SendQueue = $SendQueue;
         }
     }
+
     public function ReceiveData($JSONString)
     {
         $data = json_decode($JSONString);
@@ -282,7 +298,10 @@ class XiaomiSmartHomeSplitter extends ipsmodule
                 $this->UpdateQueue("read", $gateway->sid, $gateway->data, $gateway->model);
                 break;
             case "get_id_list_ack": // Antwort -> Abgleich mit der SendQueue
-                $this->UpdateQueue("get_id_list", $gateway->sid, $gateway->data, "gateway");
+                // Unsere SID vom Gateway hinzufügen :)
+                $Data = json_decode($gateway->data, true);
+                $Data[] = $this->sid;
+                $this->UpdateQueue("get_id_list", $gateway->sid, json_encode($Data), "gateway");
                 break;
             case 'report': // Event für Childs, weitersenden
                 $this->SendDataToChildren(json_encode(Array("DataID" => "{B75DE28A-A29F-4B11-BF9D-5CC758281F38}", "Buffer" => $data->Buffer)));
@@ -292,5 +311,7 @@ class XiaomiSmartHomeSplitter extends ipsmodule
                 break;
         }
     }
+
 }
+
 ?>

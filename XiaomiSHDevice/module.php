@@ -127,6 +127,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
         ),
         "gateway" => array(
             "rgb" => "~HexColor",
+            "brightness" => "~Intensity.255",
             "lux" => "~Illumination"
         )
     );
@@ -148,7 +149,8 @@ class XiaomiSmartHomeDevice extends ipsmodule
           saturation	Current Saturation
           hue	Current Hue
          */
-        "plug" => array("status")
+        "plug" => array("status"),
+        "gateway" => array("rgb", "brightness")
     );
 
 // Überschreibt die interne IPS_Create($id) Funktion
@@ -224,6 +226,8 @@ class XiaomiSmartHomeDevice extends ipsmodule
                 if ($Ident == "status")
                     $WriteValue = ($Value === true) ? "on" : "off";
                 break;
+            case 'gateway':
+                $WriteValue = (int) $Value;
             /* case '86sw1':
               case '86sw2':
               case 'sensor_ht':
@@ -279,6 +283,20 @@ class XiaomiSmartHomeDevice extends ipsmodule
 
     private function WriteValue($Ident, $Value)
     {
+        // Kombiwerte erstellen
+        if ($Ident == "rgb")
+        {
+            $vid = $this->GetStatusVariable("brightness", vtInteger);
+            $brightness = GetValueInteger($vid);
+            $Value = (($brightness << 24) | $Value);
+        }
+        if ($Ident == "brightness")
+        {
+            $vid = $this->GetStatusVariable("rgb", vtInteger);
+            $rgb = GetValueInteger($vid);
+            $Value = (($Value << 24) | $rgb);
+        }
+        // Ende Kombiwerte
         $Data[$Ident] = $Value;
         $Result = $this->Send('write', $Data);
         if ($Result === false)
@@ -387,7 +405,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
                 break;
             case 'weather.v1':
                 if ($Ident == "pressure")
-                    return $this->SetValueFloat($Ident, intval($Value) / 10);
+                    return $this->SetValueFloat($Ident, intval($Value) / 100);
                 else
                     return $this->SetValueFloat($Ident, intval($Value) / 100);
                 break;
@@ -400,7 +418,12 @@ class XiaomiSmartHomeDevice extends ipsmodule
                     return $this->SetValueBoolean($Ident . '_' . trim($Value), true);
                 break;
             case 'gateway':
-                return $this->SetValueInteger($Ident, (int) $Value);
+                if ($Ident == "rgb")
+                {
+                    $this->SetValueInteger($Ident, ((int) $Value & 0xffffff));
+                    $this->SetValueInteger('brightness', ((int) $Value >> 24));
+                    return;
+                }
                 break;
         }
     }
