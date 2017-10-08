@@ -355,7 +355,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
         if ($Ident == "voltage")
         {
             $this->SetValueFloat("voltage", intval($Value) / 1000);
-            $this->SetValueInteger("voltage_percent", (int) (intval($Value) / 40));
+            $this->SetValueInteger("voltage_percent", (int) (((int)$Value - 2800) / 5));
             return;
         }
 
