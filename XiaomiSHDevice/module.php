@@ -34,7 +34,8 @@ class XiaomiSmartHomeDevice extends ipsmodule
             "click" => "",
             "double_click" => "",
             "voltage" => "~Volt",
-            "voltage_percent" => "~Battery.100"
+            "voltage_percent" => "~Battery.100",
+            "battery_low" => "~Alert"
         ),
         "86sw2" => array(
             "channel_0_click" => "",
@@ -43,7 +44,8 @@ class XiaomiSmartHomeDevice extends ipsmodule
             "channel_1_double_click" => "",
             "dual_channel_both_click" => "",
             "voltage" => "~Volt",
-            "voltage_percent" => "~Battery.100"
+            "voltage_percent" => "~Battery.100",
+            "battery_low" => "~Alert"
         ),
         "sensor_ht" => array(
             "temperature" => "~Temperature",
@@ -63,13 +65,15 @@ class XiaomiSmartHomeDevice extends ipsmodule
         "magnet" => array(
             "status" => "~Window",
             "voltage" => "~Volt",
-            "voltage_percent" => "~Battery.100"
+            "voltage_percent" => "~Battery.100",
+            "battery_low" => "~Alert"
         ),
         "motion" => array(
             "status" => "~Motion",
             "lux" => "~Illumination",
             "voltage" => "~Volt",
-            "voltage_percent" => "~Battery.100"
+            "voltage_percent" => "~Battery.100",
+            "battery_low" => "~Alert"
         ),
         "plug" => array(
             "status" => "~Switch",
@@ -83,32 +87,37 @@ class XiaomiSmartHomeDevice extends ipsmodule
             "status_long_click_press" => "~Switch",
             "status_long_click_release" => "~Switch",
             "voltage" => "~Volt",
-            "voltage_percent" => "~Battery.100"
+            "voltage_percent" => "~Battery.100",
+            "battery_low" => "~Alert"
         ),
         "weather.v1" => array(
             "pressure" => "~AirPressure.F",
             "temperature" => "~Temperature",
             "humidity" => "~Humidity.F",
             "voltage" => "~Volt",
-            "voltage_percent" => "~Battery.100"
+            "voltage_percent" => "~Battery.100",
+            "battery_low" => "~Alert"
         ),
         "sensor_switch.aq2" => array(
             "status_click" => "",
             "status_double_click" => "",
             "voltage" => "~Volt",
-            "voltage_percent" => "~Battery.100"
+            "voltage_percent" => "~Battery.100",
+            "battery_low" => "~Alert"
         ),
         "sensor_motion.aq2" => array(
             "status" => "~Motion",
             "lux" => "~Illumination",
             "voltage" => "~Volt",
             "voltage_percent" => "~Battery.100",
+            "battery_low" => "~Alert",
             "no_motion" => ""
         ),
         "sensor_magnet.aq2" => array(
             "status" => "~Window",
             "voltage" => "~Volt",
             "voltage_percent" => "~Battery.100",
+            "battery_low" => "~Alert",
             "no_close" => ""
         ),
         "cube" => array(
@@ -122,8 +131,10 @@ class XiaomiSmartHomeDevice extends ipsmodule
             "status_swing" => "",
             "status_iam" => "",
             "rotate" => "",
+            "rotate_time" => "",
             "voltage" => "~Volt",
-            "voltage_percent" => "~Battery.100"
+            "voltage_percent" => "~Battery.100",
+            "battery_low" => "~Alert"
         ),
         "gateway" => array(
             "rgb" => "~HexColor",
@@ -355,7 +366,9 @@ class XiaomiSmartHomeDevice extends ipsmodule
         if ($Ident == "voltage")
         {
             $this->SetValueFloat("voltage", intval($Value) / 1000);
-            $this->SetValueInteger("voltage_percent", (int) (((int)$Value - 2800) / 5));
+            $percent = (int) (((int) $Value - 2700) / 4);
+            $this->SetValueInteger("voltage_percent", $percent);
+            $this->SetValueBooleanBoolean("battery_low", ($percent < 20 ? true : false));
             return;
         }
 
@@ -391,7 +404,10 @@ class XiaomiSmartHomeDevice extends ipsmodule
                 if ($Ident == "lux")
                     return $this->SetValueInteger($Ident, (int) $Value);
                 if ($Ident == "no_motion")
+                {
+                    $this->SetValueBoolean($Ident, false);
                     return $this->SetValueInteger($Ident, (int) $Value);
+                }
                 break;
             case 'plug':
                 if ($Ident == "status")
@@ -413,7 +429,10 @@ class XiaomiSmartHomeDevice extends ipsmodule
                 return $this->SetValueBoolean($Ident . "_" . trim($Value), true);
             case 'cube':
                 if ($Ident == "rotate")
-                    return $this->SetValueInteger($Ident, (int) (explode(',', $Value)[0] * 3.33));
+                {
+                    $this->SetValueInteger("rotate_time", (int) (explode(',', $Value)[1]));
+                    return $this->SetValueInteger("rotate", (int) (explode(',', $Value)[0] * 3.6));
+                }
                 else
                     return $this->SetValueBoolean($Ident . '_' . trim($Value), true);
                 break;
