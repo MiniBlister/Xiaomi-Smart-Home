@@ -368,7 +368,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
             $this->SetValueFloat("voltage", intval($Value) / 1000);
             $percent = (int) (((int) $Value - 2700) / 4);
             $this->SetValueInteger("voltage_percent", $percent);
-            $this->SetValueBooleanBoolean("battery_low", ($percent < 20 ? true : false));
+            $this->SetValueBoolean("battery_low", ($percent < 20 ? true : false));
             return;
         }
 

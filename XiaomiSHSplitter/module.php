@@ -60,7 +60,7 @@ class XiaomiSmartHomeSplitter extends ipsmodule
         // SendQueue leeren
         $this->SendQueue = array();
         $this->GatewayIP = "";
-
+        $this->SetSummary($this->sid);
         // Unseren Parent merken und auf dessen Statusänderungen registrieren.
         $this->RegisterParent();
         if ($this->HasActiveParent())
@@ -102,9 +102,16 @@ class XiaomiSmartHomeSplitter extends ipsmodule
     {
         $this->IORegisterParent();
         if ($this->ParentID > 0)
+        {
             $this->GatewayIP = IPS_GetProperty($this->ParentID, 'Host');
+            $this->SetSummary($this->sid);
+        }
         else
+        {
             $this->GatewayIP = "";
+            $this->sid = "";
+            $this->SetSummary('no parent');
+        }
     }
 
     /**
@@ -119,10 +126,14 @@ class XiaomiSmartHomeSplitter extends ipsmodule
         if ($State == IS_ACTIVE) // Parent ist Aktiv geworden
         {
             $this->SetTimerInterval('KeepAlive', 60000); // KeepAlive starten
+            $this->SetSummary($this->sid);
             $this->RefreshAllDevices();
         }
         else // Oh, Parent ist nicht aktiv geworden
+        {
             $this->SetTimerInterval('KeepAlive', 0); // Und kein Keep-Alive mehr.
+            $this->SetSummary('');
+        }
     }
 
     /**
@@ -156,7 +167,8 @@ class XiaomiSmartHomeSplitter extends ipsmodule
      */
     protected function RefreshAllDevices()
     {
-        $this->SendDataToChildren(json_encode(Array("DataID" => "{B75DE28A-A29F-4B11-BF9D-5CC758281F38}", "STARTUP" => "RUN")));
+        if ($this->sid != "")
+            $this->SendDataToChildren(json_encode(Array("DataID" => "{B75DE28A-A29F-4B11-BF9D-5CC758281F38}", "STARTUP" => "RUN")));
     }
 
     /** Aktuell nur zum testen, später wird diese Funktion private und über ForwardData vom Konfigurator ausgeführt.
@@ -268,6 +280,8 @@ class XiaomiSmartHomeSplitter extends ipsmodule
 
     public function ReceiveData($JSONString)
     {
+        if ($this->GatewayIP == "")
+            return;
         $data = json_decode($JSONString);
         $gateway = json_decode($data->Buffer);
         // Das bei mehr als einem Gateway wir immer alle Nachrichten von allen Gateway bekommen,
@@ -285,8 +299,16 @@ class XiaomiSmartHomeSplitter extends ipsmodule
                     $this->SetStatus(IS_ACTIVE);
                     $this->SetTimerInterval('KeepAlive', 60000);
                     //We need to check IP Address of our Gateway and Update sid accordingly
+                    $oldSid = $this->sid;
+
                     if ($this->sid != $gateway->sid)
                         $this->sid = $gateway->sid;
+
+                    $this->SetSummary($gateway->sid);
+
+                    // Nur wenn die SID vorher leer war, weil wir dann noch keinen refresh fahren konnten.
+                    if ($oldSid == "")
+                        $this->RefreshAllDevices();
                 }
                 else // alle anderen heartbeats an die Childs senden, die finden den Weg über den ReceiveFilter
                     $this->SendDataToChildren(json_encode(Array("DataID" => "{B75DE28A-A29F-4B11-BF9D-5CC758281F38}", "Buffer" => $data->Buffer)));
