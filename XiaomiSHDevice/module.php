@@ -120,6 +120,9 @@ class XiaomiSmartHomeDevice extends ipsmodule
             "battery_low" => "~Alert",
             "no_close" => ""
         ),
+        "sensor_wleak.aq1" => array(
+            "status" => "~Alert"
+        ),
         "cube" => array(
             "status_shake_air" => "",
             "status_free_fall" => "",
@@ -427,6 +430,9 @@ class XiaomiSmartHomeDevice extends ipsmodule
                 break;
             case 'sensor_switch.aq2':
                 return $this->SetValueBoolean($Ident . "_" . trim($Value), true);
+            case "sensor_wleak.aq1":
+                if ($Ident == "status")
+                    return $this->SetValueBoolean($Ident, ($Value == "leak") ? true : false);
             case 'cube':
                 if ($Ident == "rotate")
                 {
