@@ -115,16 +115,14 @@ class XiaomiSmartHomeSplitter extends ipsmodule
      */
     protected function IOChangeState($State)
     {
+        $this->SetStatus(IS_ACTIVE); // Raus aus den Fehlerzustand
         if ($State == IS_ACTIVE) // Parent ist Aktiv geworden
         {
             $this->SetTimerInterval('KeepAlive', 60000); // KeepAlive starten
             $this->RefreshAllDevices();
         }
         else // Oh, Parent ist nicht aktiv geworden
-        {
-            $this->SetStatus(IS_ACTIVE); // Raus aus den Fehlerzustand
             $this->SetTimerInterval('KeepAlive', 0); // Und kein Keep-Alive mehr.
-        }
     }
 
     /**
@@ -173,6 +171,8 @@ class XiaomiSmartHomeSplitter extends ipsmodule
     // Von Device kommend, mit Send versenden und die Antwort zurückgeben.
     public function ForwardData($JSONString)
     {
+        if ($this->sid == "")
+            return serialize(false);
         // Empfangene Daten von der Device Instanz
         $ForwardData = json_decode($JSONString);
         unset($ForwardData->DataID);
@@ -298,10 +298,13 @@ class XiaomiSmartHomeSplitter extends ipsmodule
                 $this->UpdateQueue("read", $gateway->sid, $gateway->data, $gateway->model);
                 break;
             case "get_id_list_ack": // Antwort -> Abgleich mit der SendQueue
-                // Unsere SID vom Gateway hinzufügen :)
-                $Data = json_decode($gateway->data, true);
-                $Data[] = $this->sid;
-                $this->UpdateQueue("get_id_list", $gateway->sid, json_encode($Data), "gateway");
+                if ($this->sid != "") // aber nur wenn unser Instanz schon die SID von seinem Gateway kennt
+                {
+                    // Unsere SID vom Gateway hinzufügen :)
+                    $Data = json_decode($gateway->data, true);
+                    $Data[] = $this->sid;
+                    $this->UpdateQueue("get_id_list", $gateway->sid, json_encode($Data), "gateway");
+                }
                 break;
             case 'report': // Event für Childs, weitersenden
                 $this->SendDataToChildren(json_encode(Array("DataID" => "{B75DE28A-A29F-4B11-BF9D-5CC758281F38}", "Buffer" => $data->Buffer)));
