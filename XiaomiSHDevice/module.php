@@ -408,7 +408,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
                     return $this->SetValueInteger($Ident, (int) $Value);
                 if ($Ident == "no_motion")
                 {
-                    $this->SetValueBoolean($Ident, false);
+                    $this->SetValueBoolean("status", false);
                     return $this->SetValueInteger($Ident, (int) $Value);
                 }
                 break;
