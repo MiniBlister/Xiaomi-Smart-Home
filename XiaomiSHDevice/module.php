@@ -142,7 +142,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
         "gateway" => array(
             "rgb" => "~HexColor",
             "brightness" => "~Intensity.255",
-            "lux" => "~Illumination"
+            "illumination" => "~Illumination"
         )
     );
 
@@ -301,7 +301,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
         if ($Ident == "rgb")
         {
             $vid = $this->GetStatusVariable("brightness", vtInteger);
-            $brightness = GetValueInteger($vid);
+            $brightness = round(GetValueInteger($vid) / 2);
             $Value = (($brightness << 24) | $Value);
         }
         if ($Ident == "brightness")
@@ -309,6 +309,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
             $vid = $this->GetStatusVariable("rgb", vtInteger);
             $rgb = GetValueInteger($vid);
             $Value = (($Value << 24) | $rgb);
+            $Ident = "rgb";
         }
         // Ende Kombiwerte
         $Data[$Ident] = $Value;
@@ -446,7 +447,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
                 if ($Ident == "rgb")
                 {
                     $this->SetValueInteger($Ident, ((int) $Value & 0xffffff));
-                    $this->SetValueInteger('brightness', ((int) $Value >> 24));
+                    $this->SetValueInteger('brightness', ((int) $Value >> 24)*2);
                     return;
                 }
                 break;
