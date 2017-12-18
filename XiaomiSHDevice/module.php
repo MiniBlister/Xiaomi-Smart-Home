@@ -297,6 +297,12 @@ class XiaomiSmartHomeDevice extends ipsmodule
 
     private function WriteValue($Ident, $Value)
     {
+        if ($this->model == '')
+        {
+            $this->SendDebug('write error', 'model not set', 0);
+            trigger_error('model not set', E_USER_NOTICE);
+            return false;
+        }
         // Kombiwerte erstellen
         if ($Ident == "rgb")
         {
@@ -447,7 +453,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
                 if ($Ident == "rgb")
                 {
                     $this->SetValueInteger($Ident, ((int) $Value & 0xffffff));
-                    $this->SetValueInteger('brightness', ((int) $Value >> 24)*2);
+                    $this->SetValueInteger('brightness', ((int) $Value >> 24) * 2);
                     return;
                 }
                 break;
@@ -462,7 +468,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
         $this->SendDebug('Send cmd', $Command, 0);
         if ($Data !== NULL)
         {
-            $SendData["data"] = json_encode($Data);
+            $SendData["data"] = $Data;
             $this->SendDebug('Send data', $Data, 0);
         }
         if ($this->model !== "")

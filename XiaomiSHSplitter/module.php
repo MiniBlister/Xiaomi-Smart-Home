@@ -12,6 +12,7 @@ include_once(__DIR__ . "/../XiaomTraits.php");
  * @property string $GatewayIP
  * @property array $SendQueue
  * @property string $Buffer
+ * @property string $Token
  */
 class XiaomiSmartHomeSplitter extends ipsmodule
 {
@@ -40,6 +41,7 @@ class XiaomiSmartHomeSplitter extends ipsmodule
         //Always create our own MultiCast I/O, when no parent is already available
         $this->RequireParent("{BAB408E0-0A0F-48C3-B14E-9FB2FA81F66A}");
         $this->RegisterTimer('KeepAlive', 0, 'XISMS_KeepAlive($_IPS[\'TARGET\']);');
+        $this->RegisterPropertyString('Password', '');
         // Alle Instanz-Buffer initialisieren
         $this->sid = "";
         $this->SendQueue = array();
@@ -234,7 +236,14 @@ class XiaomiSmartHomeSplitter extends ipsmodule
         if ($model !== NULL)
             $SendData["model"] = $model;
         if ($Data !== NULL)
+        {
+            $Key = openssl_encrypt(
+                    $this->Token, "AES-128-CBC", $this->ReadPropertyString('Password'), OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, hex2bin("17996D093D28DDB3BA695A2E6F58562E")
+            );
+            $Data->Key = strtoupper(bin2hex($Key));
+
             $SendData["data"] = json_encode($Data);
+        }
         $this->SendDebug('Send', $SendData, 0);
         try     // versenden
         {
@@ -294,6 +303,8 @@ class XiaomiSmartHomeSplitter extends ipsmodule
                 // heartbeat vom Gateway mit unerer IP ?
                 if (($gateway->model == "gateway") && (json_decode($gateway->data)->ip == $this->GatewayIP))
                 {
+                    if (property_exists($gateway, 'token'))
+                        $this->Token = $gateway->token;
                     // KeepAlive Timer neustarten
                     $this->SetTimerInterval('KeepAlive', 0);
                     $this->SetStatus(IS_ACTIVE);
