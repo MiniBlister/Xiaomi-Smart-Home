@@ -250,6 +250,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
               case 'switch':
               break;
              */
+                break;
             default:
                 echo 'Invalid Ident';
                 $WriteValue = null;
