@@ -141,7 +141,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
         ),
         "gateway" => array(
             "rgb" => "~HexColor",
-            "brightness" => "~Intensity.255",
+            "brightness" => "~Intensity.100",
             "illumination" => "~Illumination"
         )
     );
@@ -307,7 +307,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
         if ($Ident == "rgb")
         {
             $vid = $this->GetStatusVariable("brightness", vtInteger);
-            $brightness = round(GetValueInteger($vid) / 2);
+            $brightness = GetValueInteger($vid);
             $Value = (($brightness << 24) | $Value);
         }
         if ($Ident == "brightness")
@@ -453,7 +453,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
                 if ($Ident == "rgb")
                 {
                     $this->SetValueInteger($Ident, ((int) $Value & 0xffffff));
-                    $this->SetValueInteger('brightness', ((int) $Value >> 24) * 2);
+                    $this->SetValueInteger('brightness', ((int) $Value >> 24));
                     return;
                 }
                 break;
@@ -487,12 +487,21 @@ class XiaomiSmartHomeDevice extends ipsmodule
             return false;
         }
         $this->SendDebug('Receive', $Result, 0);
-        if ($this->model <> trim($Result['model']))
+        if (array_key_exists('error', $Result))
         {
-            $this->model = trim($Result['model']);
-            $this->SetSummary(trim($Result['model']));
+            echo $Result['error'];
+            return false;
         }
-        unset($Result['model']);
+
+        if (array_key_exists('model', $Result))
+        {
+            if ($this->model <> trim($Result['model']))
+            {
+                $this->model = trim($Result['model']);
+                $this->SetSummary(trim($Result['model']));
+            }
+            unset($Result['model']);
+        }
         return $Result;
     }
 

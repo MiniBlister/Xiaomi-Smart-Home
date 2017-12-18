@@ -240,7 +240,7 @@ class XiaomiSmartHomeSplitter extends ipsmodule
             $Key = openssl_encrypt(
                     $this->Token, "AES-128-CBC", $this->ReadPropertyString('Password'), OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, hex2bin("17996D093D28DDB3BA695A2E6F58562E")
             );
-            $Data->Key = strtoupper(bin2hex($Key));
+            $Data->key = strtoupper(bin2hex($Key));
 
             $SendData["data"] = json_encode($Data);
         }
