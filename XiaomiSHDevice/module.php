@@ -278,7 +278,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
             trigger_error('Value must be integer.', E_USER_NOTICE);
             return false;
         }
-        return $this->WriteValue($Ident, (string) $Value);
+        return $this->WriteValue($Ident, (int) $Value);
     }
 
     public function WriteValueFloat(string $Ident, float $Value)
@@ -288,7 +288,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
             trigger_error('Value must be float.', E_USER_NOTICE);
             return false;
         }
-        return $this->WriteValue($Ident, (string) $Value);
+        return $this->WriteValue($Ident, (float) $Value);
     }
 
     public function WriteValueString(string $Ident, string $Value)
