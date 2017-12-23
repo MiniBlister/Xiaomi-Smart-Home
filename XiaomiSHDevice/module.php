@@ -380,15 +380,12 @@ class XiaomiSmartHomeDevice extends ipsmodule
         $Result = $this->Send('write', $Data);
         if ($Result === false)
             return false;
-        if (!array_key_exists($this->model, self::$StatusvarProfile))
-        {
-            $this->SendDebug('unknown model', $this->model, 0);
-            return false;
-        }
+
         foreach ($Result as $Ident => $Value)
         {
             $this->Decode($Ident, $Value);
         }
+
         return true;
     }
 
@@ -546,13 +543,13 @@ class XiaomiSmartHomeDevice extends ipsmodule
         if (($Result === NULL) or ( $Result === false))
         {
             $this->SendDebug('Receive', 'Error on send command', 0);
-            echo 'Error on send command';
+            trigger_error('Error on send command', E_USER_NOTICE);
             return false;
         }
         $this->SendDebug('Receive', $Result, 0);
         if (array_key_exists('error', $Result))
         {
-            echo $Result['error'];
+            trigger_error($Result['error'], E_USER_NOTICE);
             return false;
         }
 
