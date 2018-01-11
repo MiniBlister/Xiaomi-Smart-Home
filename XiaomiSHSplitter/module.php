@@ -53,8 +53,8 @@ class XiaomiSmartHomeSplitter extends ipsmodule
         // Wir wollen wissen wann IPS fertig ist mit dem starten, weil vorher funktioniert der Datenaustausch nicht.
         $this->RegisterMessage(0, IPS_KERNELSTARTED);
         // Wenn sich unserer IO ändert, wollen wir das auch wissen.
-        $this->RegisterMessage($this->InstanceID, DM_CONNECT);
-        $this->RegisterMessage($this->InstanceID, DM_DISCONNECT);
+        $this->RegisterMessage($this->InstanceID, FM_CONNECT);
+        $this->RegisterMessage($this->InstanceID, FM_DISCONNECT);
         parent::ApplyChanges();
         // Wenn Kernel nicht bereit, dann warten... IPS_KERNELSTARTED/KR_READY kommt ja gleich
         if (IPS_GetKernelRunlevel() <> KR_READY)
