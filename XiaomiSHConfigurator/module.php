@@ -15,11 +15,20 @@ class XiaomiSmartHomeConfigurator extends ipsmodule
         parent::Create();
         $this->ConnectParent("{66C1E46E-20B6-42FE-8477-2671A0512DD6}");
         $this->SetReceiveDataFilter('.*"nothingtoreceive":.*');
+        $this->RegisterPropertyString("ondevices", "");
     }
 // Überschreibt die intere IPS_ApplyChanges($id) Funktion
     public function ApplyChanges()
     {
         parent::ApplyChanges();
+        
+        //Wenn ein Name geaendert wurde, dann soll der Variablen Namen ebenfalls gaendert werden
+        $sensorlist = json_decode($this->ReadPropertyString("ondevices"));
+        foreach ($sensorlist as $value) {
+        //Instanz darf nicht 0 sein (dann ist der Sensor noch nicht erstellt und auch der Name darf nicht leer sein
+            if ($value->instanceID != 0 && $value->name != '')
+                IPS_SetName($value->instanceID,$value->name); 
+        }
                 
     }
     public function ListDevices()
