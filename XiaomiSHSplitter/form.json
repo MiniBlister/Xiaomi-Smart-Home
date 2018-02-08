@@ -4,8 +4,12 @@
                 {
                     "type": "Label",
                     "label": "Gateway IP configuration needs to be done in the I/O instance."
+                },
+                {
+                    "name": "Password",
+                    "type": "PasswordTextBox",
+                    "caption": "Password"
                 }
-
             ],
     "status":
             [

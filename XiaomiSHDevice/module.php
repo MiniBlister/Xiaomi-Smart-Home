@@ -141,8 +141,10 @@ class XiaomiSmartHomeDevice extends ipsmodule
         ),
         "gateway" => array(
             "rgb" => "~HexColor",
-            "brightness" => "~Intensity.255",
-            "lux" => "~Illumination"
+            "brightness" => "~Intensity.100",
+            "illumination" => "~Illumination",
+            "mid" => "XISMD.Tones",
+            "vol" => "~Intensity.100"
         )
     );
 
@@ -164,7 +166,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
           hue	Current Hue
          */
         "plug" => array("status"),
-        "gateway" => array("rgb", "brightness")
+        "gateway" => array("rgb", "brightness", "mid", "vol")
     );
 
 // Überschreibt die interne IPS_Create($id) Funktion
@@ -188,6 +190,43 @@ class XiaomiSmartHomeDevice extends ipsmodule
 //Nur Daten empfangen in ReceiveData für mein Gerät
         $sid = $this->ReadPropertyString("DeviceID");
         $this->SetReceiveDataFilter('(.*\\\"sid\\\":\\\"' . $sid . '\\\".*|.*"STARTUP":"RUN".*)');
+
+        // Profile für Töne vom Gateway erstellen
+
+        $this->RegisterProfileIntegerEx('XISMD.Tones', 'Speaker', '', '', array(
+            array(0, '0', "", -1),
+            array(1, '1', "", -1),
+            array(2, '2', "", -1),
+            array(3, '3', "", -1),
+            array(4, '4', "", -1),
+            array(5, '5', "", -1),
+            array(6, '6', "", -1),
+            array(7, '7', "", -1),
+            array(8, '8', "", -1),
+            array(10, '10', "", -1),
+            array(11, '11', "", -1),
+            array(12, '12', "", -1),
+            array(13, '13', "", -1),
+            array(20, '20', "", -1),
+            array(21, '21', "", -1),
+            array(22, '22', "", -1),
+            array(23, '23', "", -1),
+            array(24, '24', "", -1),
+            array(25, '25', "", -1),
+            array(26, '26', "", -1),
+            array(27, '27', "", -1),
+            array(28, '28', "", -1),
+            array(29, '29', "", -1),
+            array(10000, 'OFF', "", -1),
+            array(10001, 'User 1', "", -1),
+            array(10002, 'User 2', "", -1),
+            array(10003, 'User 3', "", -1),
+            array(10004, 'User 4', "", -1),
+            array(10005, 'User 5', "", -1),
+            array(10006, 'User 6', "", -1),
+            array(10007, 'User 7', "", -1),
+            array(10008, 'User 8', "", -1),
+        ));
 // IPS fertig gestartet ?
         if (IPS_GetKernelRunlevel() <> KR_READY)
             return;
@@ -242,6 +281,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
                 break;
             case 'gateway':
                 $WriteValue = (int) $Value;
+                break;
             /* case '86sw1':
               case '86sw2':
               case 'sensor_ht':
@@ -277,7 +317,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
             trigger_error('Value must be integer.', E_USER_NOTICE);
             return false;
         }
-        return $this->WriteValue($Ident, (string) $Value);
+        return $this->WriteValue($Ident, (int) $Value);
     }
 
     public function WriteValueFloat(string $Ident, float $Value)
@@ -287,7 +327,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
             trigger_error('Value must be float.', E_USER_NOTICE);
             return false;
         }
-        return $this->WriteValue($Ident, (string) $Value);
+        return $this->WriteValue($Ident, (float) $Value);
     }
 
     public function WriteValueString(string $Ident, string $Value)
@@ -297,6 +337,13 @@ class XiaomiSmartHomeDevice extends ipsmodule
 
     private function WriteValue($Ident, $Value)
     {
+        $Data = array();
+        if ($this->model == '')
+        {
+            $this->SendDebug('write error', 'model not set', 0);
+            trigger_error('model not set', E_USER_NOTICE);
+            return false;
+        }
         // Kombiwerte erstellen
         if ($Ident == "rgb")
         {
@@ -309,21 +356,36 @@ class XiaomiSmartHomeDevice extends ipsmodule
             $vid = $this->GetStatusVariable("rgb", vtInteger);
             $rgb = GetValueInteger($vid);
             $Value = (($Value << 24) | $rgb);
+            $Ident = "rgb";
         }
+        if ($this->model == 'gateway')
+        {
+            switch ($Ident)
+            {
+                case 'mid':
+                    $this->SetValueInteger($Ident, $Value);
+                    $vid = $this->GetStatusVariable('vol', vtInteger);
+                    $Data['vol'] = GetValueInteger($vid);
+                    break;
+                case 'vol':
+                    $this->SetValueInteger($Ident, $Value);
+                    $vid = $this->GetStatusVariable('mid', vtInteger);
+                    $Data['mid'] = GetValueInteger($vid);
+                    break;
+            }
+        }
+
         // Ende Kombiwerte
         $Data[$Ident] = $Value;
         $Result = $this->Send('write', $Data);
         if ($Result === false)
             return false;
-        if (!array_key_exists($this->model, self::$StatusvarProfile))
-        {
-            $this->SendDebug('unknown model', $this->model, 0);
-            return false;
-        }
+
         foreach ($Result as $Ident => $Value)
         {
             $this->Decode($Ident, $Value);
         }
+
         return true;
     }
 
@@ -443,17 +505,22 @@ class XiaomiSmartHomeDevice extends ipsmodule
                     return $this->SetValueBoolean($Ident . '_' . trim($Value), true);
                 break;
             case 'gateway':
+                $this->GetStatusVariable('mid', vtInteger);
+                $this->GetStatusVariable('vol', vtInteger);
+
                 if ($Ident == "rgb")
                 {
                     $this->SetValueInteger($Ident, ((int) $Value & 0xffffff));
                     $this->SetValueInteger('brightness', ((int) $Value >> 24));
                     return;
                 }
+                else
+                    $this->SetValueInteger($Ident, (int) $Value);
                 break;
         }
     }
 
-    private function Send(string $Command, string $Data = NULL)
+    private function Send(string $Command, $Data = NULL)
     {
         $SendData = array("DataID" => "{E496ED12-5963-4494-87F3-E537175E7418}",
             "cmd" => $Command,
@@ -461,7 +528,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
         $this->SendDebug('Send cmd', $Command, 0);
         if ($Data !== NULL)
         {
-            $SendData["data"] = json_encode($Data);
+            $SendData["data"] = $Data;
             $this->SendDebug('Send data', $Data, 0);
         }
         if ($this->model !== "")
@@ -476,16 +543,25 @@ class XiaomiSmartHomeDevice extends ipsmodule
         if (($Result === NULL) or ( $Result === false))
         {
             $this->SendDebug('Receive', 'Error on send command', 0);
-            echo 'Error on send command';
+            trigger_error('Error on send command', E_USER_NOTICE);
             return false;
         }
         $this->SendDebug('Receive', $Result, 0);
-        if ($this->model <> trim($Result['model']))
+        if (array_key_exists('error', $Result))
         {
-            $this->model = trim($Result['model']);
-            $this->SetSummary(trim($Result['model']));
+            trigger_error($Result['error'], E_USER_NOTICE);
+            return false;
         }
-        unset($Result['model']);
+
+        if (array_key_exists('model', $Result))
+        {
+            if ($this->model <> trim($Result['model']))
+            {
+                $this->model = trim($Result['model']);
+                $this->SetSummary(trim($Result['model']));
+            }
+            unset($Result['model']);
+        }
         return $Result;
     }
 
