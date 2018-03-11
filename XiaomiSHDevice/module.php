@@ -73,7 +73,8 @@ class XiaomiSmartHomeDevice extends ipsmodule
             "lux" => "~Illumination",
             "voltage" => "~Volt",
             "voltage_percent" => "~Battery.100",
-            "battery_low" => "~Alert"
+            "battery_low" => "~Alert",
+            "no_motion" => ""
         ),
         "plug" => array(
             "status" => "~Switch",
