@@ -114,10 +114,10 @@ class XiaomiSmartHomeDevice extends ipsmodule
             "no_motion"       => ""
         ),
         "smoke"             => array(
-            "density"         => "~Intensity.100",
+            "density"         => "~Intensity.255",
             "voltage"         => "~Volt",
             "voltage_percent" => "~Battery.100",
-            "alarm"           => "~Alert"
+            "alarm"           => "XISMD.Smoke"
         ),
         "sensor_magnet.aq2" => array(
             "status"          => "~Window",
@@ -198,7 +198,11 @@ class XiaomiSmartHomeDevice extends ipsmodule
         $this->SetReceiveDataFilter('(.*\\\"sid\\\":\\\"' . $sid . '\\\".*|.*"STARTUP":"RUN".*)');
 
         // Profile für Töne vom Gateway erstellen
-
+        $this->RegisterProfileIntegerEx('XISMD.Smoke', 'Alert', '', '', array(
+            array(0, '0', "", -1),
+            array(1, '1', "Alarm", 0xff0000),
+            array(2, '2', "Testalarm", 0x0000ff)
+        ));
         $this->RegisterProfileIntegerEx('XISMD.Tones', 'Speaker', '', '', array(
             array(0, '0', "", -1),
             array(1, '1', "", -1),
@@ -418,7 +422,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
 
         if ($Ident == "voltage") {
             $this->SetValueFloat("voltage", intval($Value) / 1000);
-            $percent = (int) (((int) $Value - 2700) / 4);
+            $percent = (int) (((int) $Value - 2700) / 6);
             $this->SetValueInteger("voltage_percent", $percent);
             $this->SetValueBoolean("battery_low", ($percent < 20 ? true : false));
             return;
@@ -476,10 +480,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
                     return $this->SetValueFloat($Ident, intval($Value) / 100);
                 break;
             case 'smoke':
-                if ($Ident == "alarm")
-                    return $this->SetValueBoolean($Ident, $Value == 1);
-                elseif ($Ident == "density")
-                    return $this->SetValueInteger($Ident, intval($Value));
+                return $this->SetValueInteger($Ident, intval($Value));
                 break;
             case 'sensor_switch.aq2':
                 return $this->SetValueBoolean($Ident . "_" . trim($Value), true);
