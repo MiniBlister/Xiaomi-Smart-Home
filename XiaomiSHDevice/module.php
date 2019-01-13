@@ -117,7 +117,14 @@ class XiaomiSmartHomeDevice extends ipsmodule
             "density"         => "~Intensity.255",
             "voltage"         => "~Volt",
             "voltage_percent" => "~Battery.100",
+            "battery_low"     => "~Alert",
             "alarm"           => "XISMD.Smoke"
+        ),
+        "natgas"            => array(
+            "voltage"         => "~Volt",
+            "voltage_percent" => "~Battery.100",
+            "battery_low"     => "~Alert",
+            "alarm"           => "XISMD.Gas"
         ),
         "sensor_magnet.aq2" => array(
             "status"          => "~Window",
@@ -141,6 +148,18 @@ class XiaomiSmartHomeDevice extends ipsmodule
             "status_iam"       => "",
             "rotate"           => "",
             "rotate_time"      => "",
+            "voltage"          => "~Volt",
+            "voltage_percent"  => "~Battery.100",
+            "battery_low"      => "~Alert"
+        ),
+        "vibration"         => array(
+            "status_tilt"      => "",
+            "status_free_fall" => "",
+            "bed_activity"     => "",
+            "coordination_x"   => "",
+            "coordination_y"   => "",
+            "coordination_z"   => "",
+            "final_tilt_angle" => "",
             "voltage"          => "~Volt",
             "voltage_percent"  => "~Battery.100",
             "battery_low"      => "~Alert"
@@ -199,6 +218,11 @@ class XiaomiSmartHomeDevice extends ipsmodule
 
         // Profile für Töne vom Gateway erstellen
         $this->RegisterProfileIntegerEx('XISMD.Smoke', 'Alert', '', '', array(
+            array(0, '0', "", -1),
+            array(1, '1', "Alarm", 0xff0000),
+            array(2, '2', "Testalarm", 0x0000ff)
+        ));
+        $this->RegisterProfileIntegerEx('XISMD.Gas', 'Alert', '', '', array(
             array(0, '0', "", -1),
             array(1, '1', "Alarm", 0xff0000),
             array(2, '2', "Testalarm", 0x0000ff)
@@ -440,60 +464,80 @@ class XiaomiSmartHomeDevice extends ipsmodule
             case 'sensor_ht':
                 return $this->SetValueFloat($Ident, intval($Value) / 100);
             case 'rgbw_light':
-                if ($Ident == "status")
+                if ($Ident == "status") {
                     return $this->SetValueBoolean($Ident, ($Value == "on") ? true : false);
-                if ($Ident == "level")
+                }
+                if ($Ident == "level") {
                     return $this->SetValueInteger($Ident, intval($Value));
+                }
 // if ($Ident == "") // Hue Sat Temp X Y fehlt
                 break;
             case 'magnet':
             case 'sensor_magnet.aq2':
-                if ($Ident == "status")
+                if ($Ident == "status") {
                     return $this->SetValueBoolean($Ident, ($Value == "open") ? true : false);
-                if ($Ident == "no_close")
-                    return $this->SetValueInteger($Ident, (int) $Value);
-            case 'motion':
-            case 'sensor_motion.aq2':
-                if ($Ident == "status")
-                    return $this->SetValueBoolean($Ident, ($Value == "motion") ? true : false);
-                if ($Ident == "lux")
-                    return $this->SetValueInteger($Ident, (int) $Value);
-                if ($Ident == "no_motion") {
-                    $this->SetValueBoolean("status", false);
+                }
+                if ($Ident == "no_close") {
                     return $this->SetValueInteger($Ident, (int) $Value);
                 }
-                break;
+                return;
+            case 'motion':
+            case 'sensor_motion.aq2':
+                if ($Ident == "status") {
+                    return $this->SetValueBoolean($Ident, ($Value == "motion") ? true : false);
+                }
+                if ($Ident == "lux") {
+                    return $this->SetValueInteger($Ident, (int) $Value);
+                }
+                if ($Ident == "no_motion") {
+                    $this->SetValueBoolean("status", false);
+                    $this->SetValueInteger($Ident, (int) $Value);
+                }
+                return;
             case 'plug':
-                if ($Ident == "status")
+                if ($Ident == "status") {
                     return $this->SetValueBoolean($Ident, ($Value == "on") ? true : false);
-                if (($Ident == "load_power") || ($Ident == "power_consumed"))
+                }
+                if (($Ident == "load_power") || ($Ident == "power_consumed")) {
                     return $this->SetValueFloat($Ident, floatval($Value));
-                break;
+                }
+                return;
             case 'switch':
-                if ($Ident == "status")
+                if ($Ident == "status") {
                     return $this->SetValueBoolean($Ident . '_' . trim($Value), true);
-                break;
+                }
+                return;
             case 'weather.v1':
-                if ($Ident == "pressure")
-                    return $this->SetValueFloat($Ident, intval($Value) / 100);
-                else
-                    return $this->SetValueFloat($Ident, intval($Value) / 100);
-                break;
+                return $this->SetValueFloat($Ident, intval($Value) / 100);
             case 'smoke':
+            case 'natgas':
                 return $this->SetValueInteger($Ident, intval($Value));
-                break;
             case 'sensor_switch.aq2':
                 return $this->SetValueBoolean($Ident . "_" . trim($Value), true);
             case "sensor_wleak.aq1":
-                if ($Ident == "status")
+                if ($Ident == "status") {
                     return $this->SetValueBoolean($Ident, ($Value == "no leak") ? false : true);
+                }
+                return;
             case 'cube':
                 if ($Ident == "rotate") {
                     $this->SetValueInteger("rotate_time", (int) (explode(',', $Value)[1]));
                     return $this->SetValueInteger("rotate", (int) (explode(',', $Value)[0] * 3.6));
-                } else
-                    return $this->SetValueBoolean($Ident . '_' . trim($Value), true);
-                break;
+                }
+                return $this->SetValueBoolean($Ident . '_' . trim($Value), true);
+            case 'vibration':
+                if ($Ident == "final_tilt_angle") {
+                    return $this->SetValueInteger("final_tilt_angle", (int) $Value * 3.6);
+                }
+                if ($Ident == "bed_activity") {
+                    return $this->SetValueInteger($Ident, (int) $Value);
+                }
+                if ($Ident == "coordination") {
+                    $this->SetValueInteger("coordination_x", (int) (explode(',', $Value)[0]));
+                    $this->SetValueInteger("coordination_y", (int) (explode(',', $Value)[1]));
+                    return $this->SetValueInteger("coordination_z", (int) (explode(',', $Value)[1]));
+                }
+                return $this->SetValueBoolean($Ident . '_' . trim($Value), true);
             case 'gateway':
                 $this->GetStatusVariable('mid', vtInteger);
                 $this->GetStatusVariable('vol', vtInteger);
@@ -502,9 +546,8 @@ class XiaomiSmartHomeDevice extends ipsmodule
                     $this->SetValueInteger($Ident, ((int) $Value & 0xffffff));
                     $this->SetValueInteger('brightness', ((int) $Value >> 24));
                     return;
-                } else
-                    $this->SetValueInteger($Ident, (int) $Value);
-                break;
+                }
+                return $this->SetValueInteger($Ident, (int) $Value);
         }
     }
 
