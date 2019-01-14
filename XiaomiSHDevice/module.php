@@ -155,7 +155,9 @@ class XiaomiSmartHomeDevice extends ipsmodule
         "vibration"         => array(
             "status_tilt"      => "",
             "status_free_fall" => "",
+            "status_vibrate"   => "",
             "bed_activity"     => "",
+            "coordination"     => "", // dummy, wird in X Y Z aufgelöst
             "coordination_x"   => "",
             "coordination_y"   => "",
             "coordination_z"   => "",
