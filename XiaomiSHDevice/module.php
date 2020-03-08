@@ -527,7 +527,7 @@ class XiaomiSmartHomeDevice extends ipsmodule
                 return $this->SetValueBoolean($Ident . "_" . trim($Value), true);
             case "sensor_wleak.aq1":
                 if ($Ident == "status") {
-                    return $this->SetValueBoolean($Ident, ($Value == "no leak") ? false : true);
+                    return $this->SetValueBoolean($Ident, ($Value == "no_leak") ? false : true);
                 }
                 return;
             case 'cube':
