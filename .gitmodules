@@ -1,3 +1,0 @@
-[submodule "test/stubs"]
-	path = test/stubs
-	url = https://github.com/paresy/SymconStubs

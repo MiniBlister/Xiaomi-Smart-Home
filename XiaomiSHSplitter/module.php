@@ -325,10 +325,12 @@ class XiaomiSmartHomeSplitter extends ipsmodule
                     $this->SendDataToChildren(json_encode(Array("DataID" => "{B75DE28A-A29F-4B11-BF9D-5CC758281F38}", "Buffer" => $data->Buffer)));
                 break;
             case "write_ack": // Antwort -> Abgleich mit der SendQueue
-                $this->UpdateQueue("write", $gateway->sid, $gateway->data, $gateway->model);
+                //Dirty Fix für defekte SIDs mit 11 stellen, hier fehlt die 0 am Anfang.
+                $this->UpdateQueue("write", str_pad($gateway->sid, 12, '0', STR_PAD_LEFT), $gateway->data, $gateway->model);
                 break;
             case "read_ack": // Antwort -> Abgleich mit der SendQueue
-                $this->UpdateQueue("read", $gateway->sid, $gateway->data, $gateway->model);
+                //Dirty Fix für defekte SIDs mit 11 stellen, hier fehlt die 0 am Anfang.
+                $this->UpdateQueue("read", str_pad($gateway->sid, 12, '0', STR_PAD_LEFT), $gateway->data, $gateway->model);
                 break;
             case "get_id_list_ack": // Antwort -> Abgleich mit der SendQueue
                 if ($this->sid != "") // aber nur wenn unser Instanz schon die SID von seinem Gateway kennt
